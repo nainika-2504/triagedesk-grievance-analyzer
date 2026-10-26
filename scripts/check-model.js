@@ -60,15 +60,35 @@ async function directFetch(prompt, useJsonMode) {
     generationConfig,
   };
 
-  return fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-goog-api-key": key,
-    },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(25000),
-  });
+  let lastErr = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": key,
+        },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(45000),
+      });
+      if (res.status >= 500 || res.status === 429) {
+        if (attempt < 2) {
+          process.stdout.write(` (HTTP ${res.status}, retrying in 2s)...`);
+          await new Promise(r => setTimeout(r, 2000));
+          continue;
+        }
+      }
+      return res;
+    } catch (e) {
+      lastErr = e;
+      if (attempt < 2) {
+        process.stdout.write(` (timeout/error, retrying in 2s)...`);
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    }
+  }
+  throw lastErr || new Error("Request failed after retries");
 }
 
 let allPassed = true;

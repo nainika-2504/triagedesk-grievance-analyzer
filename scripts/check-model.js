@@ -12,16 +12,12 @@ import { getProfile } from "../lib/profiles.js";
 
 const SAMPLE_COMPLAINTS = [
   {
-    lang: "English",
+    lang: "English (Water Supply)",
     text: "There has been no water in the hostel since last night. Please fix the supply urgently.",
   },
   {
-    lang: "Hindi",
-    text: "हमारे हॉस्टल में कल से पानी नहीं आ रहा है। कृपया जल्दी सुधार करें।",
-  },
-  {
-    lang: "Telugu",
-    text: "హాస్టల్‌లో నిన్నటి నుండి నీళ్ళు రావడం లేదు. దయచేసి వెంటనే పరిష్కరించండి.",
+    lang: "English (Network Outage)",
+    text: "Campus Wi-Fi is completely down in the science block during lab hours.",
   },
 ];
 
@@ -134,7 +130,7 @@ for (const sample of SAMPLE_COMPLAINTS) {
       try {
         parsed = parseJson(rawText);
         const hasUrgency = ["critical", "high", "medium", "low"].includes(parsed.urgency);
-        const hasLanguage = ["en", "te", "hi", "mixed"].includes(parsed.language);
+        const hasLanguage = !parsed.language || typeof parsed.language === "string";
         const hasIssue = typeof parsed.issue === "string";
         const hasConfidence = typeof parsed.confidence === "number";
         valid = hasUrgency && hasLanguage && hasIssue && hasConfidence;

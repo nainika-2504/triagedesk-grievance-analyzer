@@ -15,7 +15,7 @@ app.use(express.json({ limit: "5mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.post("/api/analyze", analyzeHandler);
-app.get("/api/analyze/progress", (req, res) => res.json(getAnalysisProgress()));
+app.get("/api/analyze/progress", (req, res) => res.json(getAnalysisProgress(req.query?.runId)));
 app.get("/api/state", stateHandler);
 app.post("/api/state", stateHandler);
 app.get("/api/benchmark-data", async (req, res) => {

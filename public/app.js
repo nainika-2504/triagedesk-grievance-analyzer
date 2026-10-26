@@ -28,7 +28,7 @@ function renderAuth(){
   const c=document.getElementById("authContainer");
   if(!c)return;
   const isMgr=currentUser.role==="manager";
-  c.innerHTML='<div class="auth-box"><span class="auth-avatar">'+currentUser.avatar+'</span><div style="line-height:1.2"><b style="font-size:12px">'+esc(currentUser.name)+'</b> <span class="auth-role-tag '+currentUser.role+'">'+esc(currentUser.roleTitle)+'</span></div><button class="auth-switch-btn" data-act="switch-role" title="Switch to '+(isMgr?'User':'Manager')+'">⇄ '+(isMgr?'User View':'Manager View')+'</button><button class="auth-switch-btn" data-act="open-login" title="Open demo login modal">Accounts</button></div>';
+  c.innerHTML='<div class="auth-box"><span class="auth-avatar">'+currentUser.avatar+'</span><div style="line-height:1.2"><b style="font-size:12px">'+esc(currentUser.name)+'</b> <span class="auth-role-tag '+currentUser.role+'">'+esc(currentUser.roleTitle)+'</span></div><button class="auth-switch-btn" data-act="switch-role" title="Instant 1-click switch between Student and Manager view">⇄ Switch to '+(isMgr?'Student View':'Manager View')+'</button></div>';
 }
 
 function renderNav(){
@@ -50,25 +50,6 @@ function loginAs(role){
   page=role==="user"?"file-complaint":"home";
   toast("Switched to "+currentUser.name+" ("+currentUser.roleTitle+")");
   render();
-}
-
-function showLoginModal(){
-  const existing=document.getElementById("loginModal");
-  if(existing)existing.remove();
-  const m=document.createElement("div");
-  m.id="loginModal";
-  m.className="login-backdrop";
-  m.innerHTML='<div class="login-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px"><div><h2 class="login-title">Switch Demo Account</h2><p class="login-sub">Choose a role to experience TriageDesk from different perspectives:</p></div><button class="btn" id="closeLoginModal" style="min-height:30px;padding:2px 8px">✕</button></div><div class="demo-accounts"><button class="demo-account-btn '+(currentUser.role==='user'?'active':'')+'" data-login="user"><span class="demo-icon user">👤</span><div class="demo-info"><b>Priya Sharma · Student / Citizen</b><span>File grievances, automatic privacy masking, track resolution status</span><small style="color:var(--blue);font-weight:600;margin-top:4px;display:block">Username: user · Password: user123</small></div></button><button class="demo-account-btn '+(currentUser.role==='manager'?'active':'')+'" data-login="manager"><span class="demo-icon manager">🛡️</span><div class="demo-info"><b>Dr. K. Rao · Triage Manager</b><span>Full triage desk: AI analysis, duplicate clusters, review queue & audit log</span><small style="color:var(--blue);font-weight:600;margin-top:4px;display:block">Username: manager · Password: admin123</small></div></button></div><div style="border-top:1px solid #E2E8F0;padding-top:14px;display:flex;justify-content:flex-end"><button class="btn" id="dismissLoginModal">Close</button></div></div>';
-  document.body.append(m);
-  const close=()=>m.remove();
-  m.querySelector("#closeLoginModal").onclick=close;
-  m.querySelector("#dismissLoginModal").onclick=close;
-  m.querySelectorAll("[data-login]").forEach(btn=>{
-    btn.onclick=()=>{
-      loginAs(btn.dataset.login);
-      close();
-    };
-  });
 }
 
 function fileComplaintPage(){
@@ -245,7 +226,6 @@ function pairSet(groups){const s=new Set();const list=groups instanceof Map?Arra
 async function runAnalysis(list){busy=true;progressStage="complaints";const runId="run_"+Date.now()+"_"+Math.floor(Math.random()*10000);const myTotal=list.length;progressCurrent=0;progressTotal=myTotal;progressText="Analysing 0 of "+myTotal;render();let pollId=setInterval(async()=>{try{const p=await fetch(API+"/analyze/progress?runId="+encodeURIComponent(runId)).then(r=>r.json());if(p&&(p.runId===runId||!p.runId)){if(p.stage)progressStage=p.stage;if(p.text)progressText=p.text;if(p.current!=null)progressCurrent=p.current;if(p.total!=null)progressTotal=p.total;render();}}catch(e){}},400);try{const r=await fetch(API+"/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({complaints:list,workspace:state.workspace,runId})});const d=await r.json();if(!r.ok)throw Error(d.error||"Analysis failed");return d}catch(e){toast(e.message);return null}finally{clearInterval(pollId);busy=false;progressText="";progressStage="";render()}}
 async function act(name,id){
 if(name==="switch-role"){loginAs(currentUser.role==="manager"?"user":"manager");return}
-if(name==="open-login"){showLoginModal();return}
 if(name==="submit-user-grievance"){
   const textEl=document.getElementById("userGrievanceText");
   const deptEl=document.getElementById("userPreferredDept");

@@ -1,0 +1,22 @@
+{
+  "name": "triagedesk",
+  "version": "1.0.0",
+  "description": "AI-Powered Public Grievance & Service Request Analyzer",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test test/**/*.test.js",
+    "check-model": "node scripts/check-model.js",
+    "benchmark": "node scripts/benchmark.js"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "license": "MIT"
+}

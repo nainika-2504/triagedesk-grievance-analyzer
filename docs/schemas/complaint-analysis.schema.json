@@ -1,0 +1,48 @@
+{
+  "title": "Per-complaint analysis output (documentation of manual validation; not a native provider schema)",
+  "type": "object",
+  "required": [
+    "category",
+    "issue",
+    "urgency",
+    "urgency_reason",
+    "language",
+    "confidence"
+  ],
+  "properties": {
+    "category": {
+      "type": "string",
+      "description": "Active profile department name or Unassigned after normalization"
+    },
+    "issue": {
+      "type": "string"
+    },
+    "urgency": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "urgency_reason": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "en",
+        "te",
+        "hi",
+        "mixed"
+      ]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  },
+  "additionalProperties": true
+}

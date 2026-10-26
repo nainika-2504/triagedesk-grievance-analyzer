@@ -1,0 +1,28 @@
+{
+  "title": "Grouped-case recommendation output",
+  "type": "object",
+  "required": [
+    "department",
+    "next_action",
+    "draft_reply",
+    "confidence"
+  ],
+  "properties": {
+    "department": {
+      "type": "string",
+      "description": "Active profile department name or Unassigned after normalization"
+    },
+    "next_action": {
+      "type": "string"
+    },
+    "draft_reply": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  },
+  "additionalProperties": true
+}

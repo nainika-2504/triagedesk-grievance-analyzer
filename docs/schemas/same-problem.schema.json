@@ -1,0 +1,17 @@
+{
+  "title": "Same-problem check output",
+  "type": "object",
+  "required": [
+    "same_problem",
+    "reason"
+  ],
+  "properties": {
+    "same_problem": {
+      "type": "boolean"
+    },
+    "reason": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

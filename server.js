@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import analyzeHandler from "./api/analyze.js";
+import analyzeHandler, { getAnalysisProgress } from "./api/analyze.js";
 import stateHandler from "./api/state.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -13,6 +13,7 @@ app.use(express.json({ limit: "5mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.post("/api/analyze", analyzeHandler);
+app.get("/api/analyze/progress", (req, res) => res.json(getAnalysisProgress()));
 app.get("/api/state", stateHandler);
 app.post("/api/state", stateHandler);
 

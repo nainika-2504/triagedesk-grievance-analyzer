@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 import analyzeHandler, { getAnalysisProgress } from "./api/analyze.js";
 import stateHandler from "./api/state.js";
 
+import fs from "node:fs/promises";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +18,15 @@ app.post("/api/analyze", analyzeHandler);
 app.get("/api/analyze/progress", (req, res) => res.json(getAnalysisProgress()));
 app.get("/api/state", stateHandler);
 app.post("/api/state", stateHandler);
+app.get("/api/benchmark-data", async (req, res) => {
+  try {
+    const raw = await fs.readFile(path.join(__dirname, "data", "benchmark-labeled.json"), "utf8");
+    res.setHeader("Content-Type", "application/json");
+    res.send(raw);
+  } catch (e) {
+    res.status(404).json({ error: "Benchmark data not found", detail: e.message });
+  }
+});
 
 app.use((req, res, next) => {
   if (req.method !== "GET" || req.path.startsWith("/api/")) return next();
